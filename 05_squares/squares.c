@@ -7,8 +7,10 @@
  * offset (INCLUSIVE) and offset + size (EXCLUSIVE)
  */
 int isInRange(int coord, int offset, int size) {
-  // if coord is in range, return 1
-  // else, return 0
+  // if coord is in range, return 1// else, return0
+  if (offset<=coord && coord<offset+size){
+    return 1;
+  }
   return 0;
 }
 
@@ -19,10 +21,42 @@ int isInRange(int coord, int offset, int size) {
 int isAtBorder(int coord, int offset, int size) {
   // if coord is equal to offest or offset + size
   // return 1, else return 0
+  if ((coord == offset) || (coord == offset+size)){
+    return 1;
+  }
   return 0;
+}
+int max(int size1, int size2){
+  if (size1>size2){
+      return size1;
+    }
+  else{
+    return size2;
+  }
+
 }
 
 void squares(int size1, int x_offset, int y_offset, int size2) {
+  int w = max(size1,x_offset+size2);
+  int h = max(size1,y_offset+size2);
+  for (int y=0; y<h; y++){
+    for (int x=0; x<w; x++){
+      if ((isInRange(x,x_offset,size2) &&
+	  isAtBorder(y,y_offset,size2-1))||
+	(isInRange(y,y_offset,size2) &&
+	 isAtBorder(x,x_offset,size2-1))){
+	  printf("*");
+	}
+      else if ((x<size1 && isAtBorder(y,0,size1-1))||
+	       (y<size1 && isAtBorder(x,0,size1-1))){
+		 printf("#");
+	       }
+	       else{
+		 printf(" ");
+	       }
+      }
+      printf("\n");
+    }
   //compute the max of size1 and (x_offset + size2).  Call this w
 
   //compute the max of size1 and (y_offset + size2).  Call this h
