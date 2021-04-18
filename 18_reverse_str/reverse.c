@@ -3,7 +3,7 @@
 #include <string.h>
 
 void reverse(char * str) {
-  if (str[0] != '\0'){
+  if (str[0] == '\0'){
     return;
   }
   size_t str_len=strlen(str);
