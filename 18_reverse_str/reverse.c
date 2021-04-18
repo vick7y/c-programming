@@ -4,10 +4,12 @@
 
 void reverse(char * str) {
   size_t str_len=strlen(str);
-  char temp[str_len];
-  strncpy(temp,str,str_len);
-  for (int i=0; i<str_len;i++){
-    str[i]=temp[str_len-1-i];
+  if (str_len>0){
+    char temp[str_len];
+    strncpy(temp,str,str_len);
+    for (int i=0; i<str_len;i++){
+      str[i]=temp[str_len-1-i];
+    }
   }
 }
 
