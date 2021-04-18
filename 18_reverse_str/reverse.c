@@ -3,7 +3,7 @@
 #include <string.h>
 
 void reverse(char * str) {
-  if (sizeof(str)!=0){
+  if (str){
     size_t str_len=strlen(str);
     char temp[str_len];
     strcpy(temp,str);
