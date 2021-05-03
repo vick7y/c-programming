@@ -4,29 +4,169 @@
 #include <assert.h>
 
 int card_ptr_comp(const void * vp1, const void * vp2) {
-  return 0;
+  const card_t * const * cp1 = vp1;
+  const card_t * const * cp2 = vp2;
+
+  if ((**cp1).value != (**cp2).value){
+    return (**cp2).value - (**cp1).value;
+  }
+  else{
+    return (**cp2).suit - (**cp1).suit;
+  }
 }
 
 suit_t flush_suit(deck_t * hand) {
+  int spade=0;
+  int club=0;
+  int heart=0;
+  int diamond=0;
+
+  for (int i=0;i<(*hand).n_cards;i++){
+    card_t card=*((*hand).cards[i]);
+    switch(card.suit) {
+    case SPADES:spade+=1;break;
+    case HEARTS:heart+=1;break;
+    case DIAMONDS:diamond+=1;break;
+    case CLUBS: club+=1;break;
+    case NUM_SUITS:break;
+    }
+  }
+  
+  printf("spades: %d; club: %d; heart: %d; diamond: %d;\n",spade,club,heart,diamond);
+
+  if (spade>=5){
+    return SPADES;
+    }
+  if (club>=5){
+    return CLUBS;
+    }
+  if (heart>=5){
+    return HEARTS;
+    }
+  if (diamond>=5){
+    return DIAMONDS;
+    }
+    
   return NUM_SUITS;
 }
 
 unsigned get_largest_element(unsigned * arr, size_t n) {
-  return 0;
+  if (n<=0){
+    exit(EXIT_FAILURE);
+  }
+  unsigned max=0;
+  for (int i=0;i<n;i++){
+    if (arr[i]>max){
+      max=arr[i];
+    }
+  }
+  printf("the largest element is %u \n",max);
+  return max;
+     
 }
 
 size_t get_match_index(unsigned * match_counts, size_t n,unsigned n_of_akind){
 
-  return 0;
+  for (size_t i=0;i<n;i++){
+    if(match_counts[i]==n_of_akind){
+      printf("max index is:%zu\n",i);
+      return i;
+    }}
+  exit(EXIT_FAILURE);
 }
-ssize_t  find_secondary_pair(deck_t * hand,
-			     unsigned * match_counts,
-			     size_t match_idx) {
+
+ssize_t  find_secondary_pair(deck_t * hand,unsigned * match_counts,size_t match_idx) {
+   card_t card_match=*((*hand).cards[match_idx]);
+   for (ssize_t i=0;i<sizeof(match_counts)/sizeof(match_counts[0]);i++){
+     card_t card_cur=*((*hand).cards[i]);
+     if((match_counts[i]>1)&&(card_cur.value!=card_match.value)){
+    	return i;
+ }
+ }
+  printf("didn't find second pair\n");
   return -1;
 }
 
+
+int is_n_length_straight_at(deck_t * hand, size_t index, suit_t fs,int n){
+  printf("I'm in the n_length_straignt function,the current index is %zu\n",index);
+  if (index>(*hand).n_cards-n){
+    return 0;
+  }
+  if (fs==NUM_SUITS){
+    int k_straight=1;
+    for (int i=index+1;i<hand->n_cards;i++){
+ 
+      card_t card_cur=*((*hand).cards[i]);
+      card_t card_pre=*((*hand).cards[i-1]);
+      if (card_cur.value==card_pre.value){
+	continue;
+      }
+      else{
+	if (card_cur.value==card_pre.value-1){
+	  k_straight+=1;
+	}
+	else{
+	  k_straight=1;
+	}
+      }
+      if (k_straight==n){
+	return 1;
+      }
+    }
+    return 0;
+  }
+  else{
+    int k_straight=1;
+    for (int i=index+1;i<(*hand).n_cards;i++){
+   
+      card_t card_cur=*((*hand).cards[i]);
+      card_t card_pre=*((*hand).cards[i-1]);
+      if ((card_cur.value==card_pre.value-1)&&(card_cur.suit==fs)){
+	k_straight+=1;
+      }
+      else if (card_cur.value==card_pre.value){
+	continue;
+      }
+      else{
+	k_straight=1;
+      }
+      if (k_straight==n){
+	return 1;
+      }
+    }
+    return 0;
+	  }
+}
+
+int is_ace_low_straight_at(deck_t * hand, size_t index, suit_t fs){
+  printf("I'm in the ace low function, the current index is %zu\n",index);
+  size_t i=index;
+  while ((*((*hand).cards[i])).value!=5 && i<6){
+    i+=1;
+  }
+  int result=is_n_length_straight_at(hand, i, fs,4);
+  printf("result is %d \n",result);
+  if (fs==NUM_SUITS){
+    return result*-1;
+    }
+  else{
+    if (hand -> cards[index] ->suit==fs){
+	return -1*result;
+      }
+    return 0;
+    }
+  }
+
+
 int is_straight_at(deck_t * hand, size_t index, suit_t fs) {
-  return 0;
+  printf("I'm in the is_straight_at function,the current index is %zu\n",index);
+  if (hand->cards[index]->value==VALUE_ACE){
+    if (is_ace_low_straight_at(hand,index,fs)==-1){
+      printf("index: %zu \n has an ace low straight",index);
+      return -1;}
+  }
+  return is_n_length_straight_at(hand, index, fs,5);
 }
 
 hand_eval_t build_hand_from_match(deck_t * hand,
