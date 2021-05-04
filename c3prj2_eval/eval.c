@@ -137,17 +137,16 @@ int is_n_length_straight_at(deck_t * hand, size_t index, suit_t fs,int n){
 	 k_straight+=1;
 	  // printf("value is %d \n",card_cur.value);
 	}
-       else{
+      else{
 	 return 0;
 	}
-      }
       if (k_straight==n){
 	return 1;
       }
     }
     return 0;
   }
-
+}
 
 int is_ace_low_straight_at(deck_t * hand, size_t index, suit_t fs){
   // printf("I'm in the ace low function, the current index is %zu\n",index);
