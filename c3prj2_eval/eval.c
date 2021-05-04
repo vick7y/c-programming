@@ -174,20 +174,25 @@ int is_straight_at(deck_t * hand, size_t index, suit_t fs) {
 }
 
 hand_eval_t build_hand_from_match(deck_t * hand,unsigned n,hand_ranking_t what, size_t idx) {
-  // printf("I'm building hand from match\n");
+  printf("I'm building hand from match\n");
   hand_eval_t ans;
-  
   ans.ranking=what;
-
-  for (size_t i=idx;i<(unsigned)idx+n;i++){
+  unsigned k=n;
+  if (k==0){
+    k+=1;}
+    
+  
+  for (size_t i=idx;i<(unsigned)idx+k;i++){
     ans.cards[i-idx]=hand->cards[i];
   }
 
+
+
   unsigned fill_in=0;
   unsigned cur=0;
-  while (fill_in<5-n){
+  while (fill_in<5-k){
     if (hand->cards[cur]->value!=hand->cards[idx]->value){
-      ans.cards[n+fill_in]=hand->cards[cur];
+      ans.cards[k+fill_in]=hand->cards[cur];
       fill_in+=1;
     }
     cur+=1;
