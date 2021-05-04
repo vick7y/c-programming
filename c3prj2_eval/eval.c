@@ -174,7 +174,7 @@ int is_straight_at(deck_t * hand, size_t index, suit_t fs) {
 }
 
 hand_eval_t build_hand_from_match(deck_t * hand,unsigned n,hand_ranking_t what, size_t idx) {
-  printf("I'm building hand from match\n");
+  // printf("I'm building hand from match\n");
   hand_eval_t ans;
   ans.ranking=what;
   unsigned k=n;
