@@ -76,10 +76,10 @@ size_t get_match_index(unsigned * match_counts, size_t n,unsigned n_of_akind){
 }
 
 ssize_t find_secondary_pair(deck_t * hand,unsigned * match_counts,size_t match_idx) {
-   card_t card_match=*((*hand).cards[match_idx]);
-   for (int i=0;i<7;i++){
-     card_t card_cur=*((*hand).cards[i]);
-     if((match_counts[i]>1)&&(card_cur.value!=card_match.value)){
+  //card_t card_match=*((*hand).cards[match_idx]);
+   for (size_t i=0;i<hand->n_cards;i++){
+     // card_t card_cur=hand->cards[i];
+     if((match_counts[i]>1)&&(hand->cards[i]->value!=hand->cards[i]->value)){
     	return i;
  }
  }
