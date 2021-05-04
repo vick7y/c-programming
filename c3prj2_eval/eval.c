@@ -146,7 +146,7 @@ int is_n_length_straight_at(deck_t * hand, size_t index, suit_t fs,int n){
 int is_ace_low_straight_at(deck_t * hand, size_t index, suit_t fs){
   // printf("I'm in the ace low function, the current index is %zu\n",index);
   size_t i=index;
-  while ((*((*hand).cards[i])).value!=5 && i<6){
+  while (hand->cards[i]->value!=5 && i<5){
     i+=1;
   }
   int result=is_n_length_straight_at(hand, i, fs,4);
