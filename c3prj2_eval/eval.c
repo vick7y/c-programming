@@ -7,11 +7,11 @@ int card_ptr_comp(const void * vp1, const void * vp2) {
   const card_t * const * cp1 = vp1;
   const card_t * const * cp2 = vp2;
 
-  if ((**cp1).value != (**cp2).value){
-    return (**cp2).value - (**cp1).value;
+  if ((*cp1)->value !=(*cp2)->value){
+    return (*cp2)->value - (*cp1)->value;
   }
   else{
-    return (**cp2).suit - (**cp1).suit;
+    return (*cp2)->suit - (*cp1)->suit;
   }
 }
 
@@ -77,12 +77,14 @@ size_t get_match_index(unsigned * match_counts, size_t n,unsigned n_of_akind){
 
 ssize_t find_secondary_pair(deck_t * hand,unsigned * match_counts,size_t match_idx) {
   //card_t card_match=*((*hand).cards[match_idx]);
-   for (size_t i=0;i<hand->n_cards;i++){
+  //printf("idx of first pair is %zu \n",match_idx);
+  for (size_t i=0;i<hand->n_cards;i++){
      // card_t card_cur=hand->cards[i];
-     if((match_counts[i]>1)&&(hand->cards[i]->value!=hand->cards[i]->value)){
+     //printf("looking at %zu \n",i);
+     if((match_counts[i]>1)&&(hand->cards[i]->value!=hand->cards[match_idx]->value)){
     	return i;
- }
- }
+     }
+  }
    // printf("didn't find second pair\n");
   return -1;
 }
