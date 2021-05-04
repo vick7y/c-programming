@@ -206,7 +206,7 @@ int compare_hands(deck_t * hand1, deck_t * hand2) {
   //printf("size of hand 2 is %zu\n",sizeof(hand2->cards));
   //printf("size of hand 1 card 1 is %zu\n",sizeof(hand1->cards[0]));
   // printf("# of elements in hand1 is %zu \n",hand1->n_cards);
-  qsort(hand1->cards,hand2->n_cards,sizeof(const card_t *),card_ptr_comp);
+  qsort(hand1->cards,hand1->n_cards,sizeof(const card_t *),card_ptr_comp);
   qsort(hand2->cards,hand2->n_cards,sizeof(const card_t *),card_ptr_comp);
   hand_eval_t ans1=evaluate_hand(hand1);
   hand_eval_t ans2=evaluate_hand(hand2);
