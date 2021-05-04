@@ -123,21 +123,22 @@ int is_n_length_straight_at(deck_t * hand, size_t index, suit_t fs,int n){
       return 0;
     }
     int k_straight=1;
+    int temp=1;
     for (int i=index+1;i<(*hand).n_cards;i++){
    
       card_t card_cur=*((*hand).cards[i]);
-      card_t card_pre=*((*hand).cards[i-1]);
-
-     if (card_cur.value==card_pre.value){
+      card_t card_pre=*((*hand).cards[i-temp]);
+      if (card_cur.suit!=fs){
+	temp+=1;
 	continue;
       }
-      else{
-	if (card_cur.value==card_pre.value-1&&card_cur.suit==fs){
-	  k_straight+=1;
+      temp=1;
+      if (card_cur.value==card_pre.value-1){
+	 k_straight+=1;
 	  // printf("value is %d \n",card_cur.value);
 	}
-	else{
-	  return 0;
+       else{
+	 return 0;
 	}
       }
       if (k_straight==n){
@@ -146,7 +147,7 @@ int is_n_length_straight_at(deck_t * hand, size_t index, suit_t fs,int n){
     }
     return 0;
   }
- }
+
 
 int is_ace_low_straight_at(deck_t * hand, size_t index, suit_t fs){
   // printf("I'm in the ace low function, the current index is %zu\n",index);
