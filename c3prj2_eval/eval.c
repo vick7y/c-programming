@@ -32,7 +32,7 @@ suit_t flush_suit(deck_t * hand) {
     }
   }
   
-  printf("spades: %d; club: %d; heart: %d; diamond: %d;\n",spade,club,heart,diamond);
+  // printf("spades: %d; club: %d; heart: %d; diamond: %d;\n",spade,club,heart,diamond);
 
   if (spade>=5){
     return SPADES;
@@ -60,7 +60,7 @@ unsigned get_largest_element(unsigned * arr, size_t n) {
       max=arr[i];
     }
   }
-  printf("the largest element is %u \n",max);
+  //  printf("the largest element is %u \n",max);
   return max;
      
 }
@@ -69,27 +69,26 @@ size_t get_match_index(unsigned * match_counts, size_t n,unsigned n_of_akind){
 
   for (size_t i=0;i<n;i++){
     if(match_counts[i]==n_of_akind){
-      printf("max index is:%zu\n",i);
+      // printf("max index is:%zu\n",i);
       return i;
     }}
   exit(EXIT_FAILURE);
 }
 
-ssize_t  find_secondary_pair(deck_t * hand,unsigned * match_counts,size_t match_idx) {
+ssize_t find_secondary_pair(deck_t * hand,unsigned * match_counts,size_t match_idx) {
    card_t card_match=*((*hand).cards[match_idx]);
-   for (ssize_t i=0;i<sizeof(match_counts)/sizeof(match_counts[0]);i++){
+   for (int i=0;i<7;i++){
      card_t card_cur=*((*hand).cards[i]);
      if((match_counts[i]>1)&&(card_cur.value!=card_match.value)){
     	return i;
  }
  }
-  printf("didn't find second pair\n");
+   // printf("didn't find second pair\n");
   return -1;
 }
 
 
 int is_n_length_straight_at(deck_t * hand, size_t index, suit_t fs,int n){
-  printf("I'm in the n_length_straignt function,the current index is %zu\n",index);
   if (index>(*hand).n_cards-n){
     return 0;
   }
@@ -105,9 +104,10 @@ int is_n_length_straight_at(deck_t * hand, size_t index, suit_t fs,int n){
       else{
 	if (card_cur.value==card_pre.value-1){
 	  k_straight+=1;
+	  // printf("value is %d \n",card_cur.value);
 	}
 	else{
-	  k_straight=1;
+	  return 0;
 	}
       }
       if (k_straight==n){
@@ -122,31 +122,35 @@ int is_n_length_straight_at(deck_t * hand, size_t index, suit_t fs,int n){
    
       card_t card_cur=*((*hand).cards[i]);
       card_t card_pre=*((*hand).cards[i-1]);
-      if ((card_cur.value==card_pre.value-1)&&(card_cur.suit==fs)){
-	k_straight+=1;
-      }
-      else if (card_cur.value==card_pre.value){
+
+     if (card_cur.value==card_pre.value){
 	continue;
       }
       else{
-	k_straight=1;
+	if (card_cur.value==card_pre.value-1&&card_cur.suit==fs){
+	  k_straight+=1;
+	  // printf("value is %d \n",card_cur.value);
+	}
+	else{
+	  return 0;
+	}
       }
       if (k_straight==n){
 	return 1;
       }
     }
     return 0;
-	  }
-}
+  }
+ }
 
 int is_ace_low_straight_at(deck_t * hand, size_t index, suit_t fs){
-  printf("I'm in the ace low function, the current index is %zu\n",index);
+  // printf("I'm in the ace low function, the current index is %zu\n",index);
   size_t i=index;
   while ((*((*hand).cards[i])).value!=5 && i<6){
     i+=1;
   }
   int result=is_n_length_straight_at(hand, i, fs,4);
-  printf("result is %d \n",result);
+  // printf("result is %d \n",result);
   if (fs==NUM_SUITS){
     return result*-1;
     }
@@ -160,27 +164,59 @@ int is_ace_low_straight_at(deck_t * hand, size_t index, suit_t fs){
 
 
 int is_straight_at(deck_t * hand, size_t index, suit_t fs) {
-  printf("I'm in the is_straight_at function,the current index is %zu\n",index);
   if (hand->cards[index]->value==VALUE_ACE){
     if (is_ace_low_straight_at(hand,index,fs)==-1){
-      printf("index: %zu \n has an ace low straight",index);
       return -1;}
   }
   return is_n_length_straight_at(hand, index, fs,5);
 }
 
-hand_eval_t build_hand_from_match(deck_t * hand,
-				  unsigned n,
-				  hand_ranking_t what,
-				  size_t idx) {
-
+hand_eval_t build_hand_from_match(deck_t * hand,unsigned n,hand_ranking_t what, size_t idx) {
+  // printf("I'm building hand from match\n");
   hand_eval_t ans;
+  
+  ans.ranking=what;
+
+  for (size_t i=idx;i<(unsigned)idx+n;i++){
+    ans.cards[i-idx]=hand->cards[i];
+  }
+
+  unsigned fill_in=0;
+  unsigned cur=0;
+  while (fill_in<5-n){
+    if (hand->cards[cur]->value!=hand->cards[idx]->value){
+      ans.cards[n+fill_in]=hand->cards[cur];
+      fill_in+=1;
+    }
+    cur+=1;
+  }
+
+  //  for (int i=0;i<5;i++){
+  // printf("value of card %d\n",ans.cards[i]->value);}
+
   return ans;
 }
 
 
 int compare_hands(deck_t * hand1, deck_t * hand2) {
 
+  // printf("size of hand 1 is %zu\n",sizeof(const card_t * const *));
+  //printf("size of hand 2 is %zu\n",sizeof(hand2->cards));
+  //printf("size of hand 1 card 1 is %zu\n",sizeof(hand1->cards[0]));
+  // printf("# of elements in hand1 is %zu \n",hand1->n_cards);
+  qsort(hand1->cards,hand2->n_cards,sizeof(const card_t *),card_ptr_comp);
+  qsort(hand2->cards,hand2->n_cards,sizeof(const card_t *),card_ptr_comp);
+  hand_eval_t ans1=evaluate_hand(hand1);
+  hand_eval_t ans2=evaluate_hand(hand2);
+  // printf("Please wait");
+  if (ans1.ranking!=ans2.ranking){
+    return ans2.ranking-ans1.ranking;
+  }
+
+  for (int i=0;i<5;i++){
+    if(ans1.cards[i]->value!=ans2.cards[i]->value){
+    return ans1.cards[i]->value-ans2.cards[i]->value;}
+  }
   return 0;
 }
 
